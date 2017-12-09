@@ -22,18 +22,18 @@ import (
 // This may be called from a new goroutine, as it starts an infinite loop.
 //
 func AliveLoop(path string, version string, step time.Duration) {
-	_, err := os.Stat(path)
-	if os.IsNotExist(err) {
-		log.Fatal("Path does not exist: ", path)
+	for {
+		_, err := os.Stat(path)
+		if os.IsNotExist(err) {
+			log.Fatal("Path does not exist: ", path)
+		}
+
+		time.Sleep(step * time.Millisecond)
+
+		cmd := fmt.Sprintf("echo \"%s\" > \"%s/alive\"", version, path)
+		err2 := hlp.Run(cmd)
+		if err2 != nil {
+			log.Fatal("Error running: ", cmd, "\nThe error was: ", err2)
+		}
 	}
-
-	time.Sleep(step * time.Millisecond)
-
-	cmd := fmt.Sprintf("echo \"%s\" > \"%s/alive\"", version, path)
-	err2 := hlp.Run(cmd)
-	if err2 != nil {
-		log.Fatal("Error running: ", cmd, "\nThe error was: ", err2)
-	}
-
-	AliveLoop(path, version, step)
 }
