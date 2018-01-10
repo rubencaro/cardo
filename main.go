@@ -11,7 +11,8 @@ import (
 func main() {
 
 	http.HandleFunc("/ping", web.PingHandler)
-	http.HandleFunc("/", http.NotFound)
+	http.HandleFunc("/events", web.EventsHandler)
+	http.Handle("/", http.FileServer(http.Dir("static")))
 
 	// start server
 	srv := &http.Server{
