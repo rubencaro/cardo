@@ -12,6 +12,7 @@ func main() {
 
 	http.HandleFunc("/ping", web.PingHandler)
 	http.HandleFunc("/events", web.EventsHandler)
+	http.HandleFunc("/ws", web.SocketsHandler)
 	http.Handle("/", http.FileServer(http.Dir("static")))
 
 	// start server

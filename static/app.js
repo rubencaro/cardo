@@ -1,8 +1,8 @@
 // SSE example
 
-let source = new EventSource('/events')
+let socket = new WebSocket("ws://" + document.location.host + "/ws")
 
-source.onmessage = (e) => {
+socket.onmessage = (e) => {
   let txt = document.createTextNode(e.data)
   let div = document.createElement("div")
   div.appendChild(txt)
@@ -12,13 +12,13 @@ source.onmessage = (e) => {
 }
 
 // handle reconnection on our own
-let lastState = EventSource.CONNECTING
+let lastState = WebSocket.CONNECTING
 window.setInterval(() => {
-  let state = source.readyState
-  if (state == EventSource.CLOSED && lastState == EventSource.CLOSED) {
-    console.log("Resetting EventSource")
-    source.close()
-    source = new EventSource('/events')
+  let state = socket.readyState
+  if (state == WebSocket.CLOSED && lastState == WebSocket.CLOSED) {
+    console.log("Resetting WebSocket")
+    socket.close()
+    socket = new WebSocket("ws://" + document.location.host + "/ws")
   }
   else {
     lastState = state
