@@ -12,6 +12,8 @@ import (
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
+	// to allow development websockets, to be configured differently on production
+	CheckOrigin: func(r *http.Request) bool { return true },
 }
 
 // SocketsHandler handles the connection and dispatching
