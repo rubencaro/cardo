@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -22,5 +23,6 @@ func main() {
 		ReadTimeout:  15 * time.Second,
 	}
 
+	fmt.Printf("Listening at %s...\n", srv.Addr)
 	log.Fatal(srv.ListenAndServe())
 }

@@ -27,6 +27,8 @@ func SocketsHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("Socket connected")
 
+	go generateLogs(conn)
+
 	for {
 		msgType, msg, err := conn.ReadMessage()
 		if err != nil {
@@ -46,5 +48,17 @@ func SocketsHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(string(msg))
 			return
 		}
+	}
+}
+
+func generateLogs(conn *websocket.Conn) {
+	for {
+		err := conn.WriteMessage(websocket.TextMessage, []byte("bump"))
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		time.Sleep(time.Second * 5)
+		log.Println("Sent bump.")
 	}
 }
