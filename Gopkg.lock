@@ -2,6 +2,23 @@
 
 
 [[projects]]
+  branch = "master"
+  name = "github.com/arangodb/go-driver"
+  packages = [
+    ".",
+    "cluster",
+    "http",
+    "util"
+  ]
+  revision = "b134dfa11f6db82e858717127c8aaf2efa8de257"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/arangodb/go-velocypack"
+  packages = ["."]
+  revision = "c899a2a2271f97f297fd70afd031e5ffb9497f83"
+
+[[projects]]
   name = "github.com/fsnotify/fsnotify"
   packages = ["."]
   revision = "629574ca2a5df945712d3079857300b5e4da0236"
@@ -16,7 +33,17 @@
 [[projects]]
   branch = "master"
   name = "github.com/hashicorp/hcl"
-  packages = [".","hcl/ast","hcl/parser","hcl/scanner","hcl/strconv","hcl/token","json/parser","json/scanner","json/token"]
+  packages = [
+    ".",
+    "hcl/ast",
+    "hcl/parser",
+    "hcl/scanner",
+    "hcl/strconv",
+    "hcl/token",
+    "json/parser",
+    "json/scanner",
+    "json/token"
+  ]
   revision = "23c074d0eceb2b8a5bfdbb271ab780cde70f05a8"
 
 [[projects]]
@@ -39,7 +66,10 @@
 
 [[projects]]
   name = "github.com/spf13/afero"
-  packages = [".","mem"]
+  packages = [
+    ".",
+    "mem"
+  ]
   revision = "8d919cbe7e2627e417f3e45c3c0e489a5b7e2536"
   version = "v1.0.0"
 
@@ -76,7 +106,14 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/text"
-  packages = ["internal/gen","internal/triegen","internal/ucd","transform","unicode/cldr","unicode/norm"]
+  packages = [
+    "internal/gen",
+    "internal/triegen",
+    "internal/ucd",
+    "transform",
+    "unicode/cldr",
+    "unicode/norm"
+  ]
   revision = "be25de41fadfae372d6470bda81ca6beb55ef551"
 
 [[projects]]
@@ -88,6 +125,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "85c04323dcccfb2a0f5a8a0573fe8acdc28f5c3b789cb5d9794582d5cc75f67c"
+  inputs-digest = "ac45b8a29abbdd0cf9ae16f5873e2857f0f2477d4e8f8274ae7cb7a0ebcfd3cc"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -5,8 +5,6 @@ import (
 	"log"
 	"os"
 	"time"
-
-	"github.com/rubencaro/cardo/lib/hlp"
 )
 
 // AliveLoop takes a folder path, a version string, and a step, and then
@@ -31,7 +29,7 @@ func AliveLoop(path string, version string, step time.Duration) {
 		time.Sleep(step * time.Millisecond)
 
 		cmd := fmt.Sprintf("echo \"%s\" > \"%s/alive\"", version, path)
-		err2 := hlp.Run(cmd)
+		err2 := Run(cmd)
 		if err2 != nil {
 			log.Fatal("Error running: ", cmd, "\nThe error was: ", err2)
 		}

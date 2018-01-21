@@ -6,14 +6,27 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/rubencaro/cardo/lib/cnf"
+	"github.com/rubencaro/cardo/lib/db"
 	"github.com/rubencaro/cardo/lib/web"
 )
 
 func main() {
+	c, err := cnf.Read()
+	if err != nil {
+		fmt.Println("Error reading config: ", err)
+		return
+	}
+
+	logs, err := db.GetCollection("logs", &c)
+	if err != nil {
+		fmt.Println("Error getting database: ", err)
+		return
+	}
 
 	http.HandleFunc("/ping", web.PingHandler)
 	http.HandleFunc("/events", web.EventsHandler)
-	http.HandleFunc("/ws", web.SocketsHandler)
+	http.HandleFunc("/ws", web.SocketsHandler(logs))
 	http.Handle("/", http.FileServer(http.Dir("static")))
 
 	// start server
