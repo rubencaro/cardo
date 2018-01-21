@@ -98,11 +98,11 @@ func doRead(path string, env string) (*viper.Viper, error) {
 
 	v := viper.New()
 
-	// add ENV support for any FRANCIS_* variable
-	v.SetEnvPrefix("francis")
+	// add ENV support for any CARDO_* variable
+	v.SetEnvPrefix("cardo")
 	v.AutomaticEnv()
 
-	// force config path if given via FRANCIS_PATH
+	// force config path if given via CARDO_PATH
 	if v.IsSet("path") {
 		path = v.GetString("path")
 	}
@@ -115,7 +115,7 @@ func doRead(path string, env string) (*viper.Viper, error) {
 		return v, err
 	}
 
-	// force env if given via FRANCIS_ENV
+	// force env if given via CARDO_ENV
 	if v.IsSet("env") {
 		env = v.GetString("env")
 	}
