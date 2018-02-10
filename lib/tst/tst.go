@@ -11,6 +11,7 @@ import (
 	"reflect"
 	"regexp"
 	"runtime"
+	"strings"
 	"testing"
 )
 
@@ -54,12 +55,28 @@ func Regexp(tb testing.TB, pattern string, value string) {
 	assert(tb, matched, "\n\n\texpected pattern: %s\n\n\tgot: %s", pattern, value)
 }
 
-// The actual assert function, always reports 'runtime.Caller(2)'
+// The actual assert function, always reports 'runtime.Caller(2)' and beyond
 // so it's meant to be called by the public assert functions
 func assert(tb testing.TB, condition bool, msg string, v ...interface{}) {
 	if !condition {
-		_, file, line, _ := runtime.Caller(2)
-		fmt.Printf("\033[31m%s:%d: "+msg+"\033[39m\n\n", append([]interface{}{filepath.Base(file), line}, v...)...)
+		backtrace := getBacktrace()
+		fmt.Printf(backtrace+" \033[31m"+msg+"\033[39m\n\n", v...)
 		tb.FailNow()
 	}
+}
+
+func getBacktrace() string {
+	return "\033[1;91m" + strings.Join(getCallers(), "") + "\033[00m"
+}
+
+func getCallers() []string {
+	callers := []string{}
+	ok := true
+	var file string
+	var line int
+	for i := 4; ok; i++ {
+		_, file, line, ok = runtime.Caller(i)
+		callers = append(callers, fmt.Sprintf("\n%s:%d", filepath.Base(file), line))
+	}
+	return callers[:len(callers)-3]
 }
