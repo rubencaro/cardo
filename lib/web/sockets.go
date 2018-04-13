@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"regexp"
 	"time"
 
 	driver "github.com/arangodb/go-driver"
 	"github.com/gorilla/websocket"
+	"github.com/rubencaro/cardo/lib/input"
 )
 
 var upgrader = websocket.Upgrader{
@@ -39,34 +39,13 @@ func SocketsHandler(coll driver.Collection) func(http.ResponseWriter, *http.Requ
 				return
 			}
 
-			err = dispatch(conn, coll, string(msg))
+			err = input.Dispatch(conn, coll, string(msg))
 			if err != nil {
 				fmt.Println(err)
 				return
 			}
 		}
 	}
-}
-
-var logRE = regexp.MustCompile(`^log: `)
-
-func dispatch(conn *websocket.Conn, coll driver.Collection, msg string) error {
-	switch {
-	case logRE.MatchString(msg):
-		dispatchLog(coll, msg)
-		return nil
-	default:
-		conn.Close()
-		return fmt.Errorf("Unexpected msg: %s", msg)
-	}
-}
-
-func dispatchLog(coll driver.Collection, msg string) {
-	meta, err := coll.CreateDocument(nil, map[string]string{"msg": msg})
-	if err != nil {
-		fmt.Println("failed to create document: ", err, "\nmeta: ", meta)
-	}
-	log.Println("Created new document for ", msg)
 }
 
 func send(conn *websocket.Conn, msg string) error {
