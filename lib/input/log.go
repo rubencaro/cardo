@@ -2,15 +2,17 @@ package input
 
 import (
 	"fmt"
-	"log"
-
-	driver "github.com/arangodb/go-driver"
 )
 
-func handleLog(coll driver.Collection, msg string) {
-	meta, err := coll.CreateDocument(nil, map[string]string{"msg": msg})
+func init() {
+	routes["log"] = handleLog
+}
+
+func handleLog(data *dispatchData) error {
+	meta, err := data.coll.CreateDocument(nil, map[string]string{"msg": data.msg})
 	if err != nil {
-		fmt.Println("failed to create document: ", err, "\nmeta: ", meta)
+		return fmt.Errorf("failed to create document: %s\nmeta: %s", err.Error(), meta)
 	}
-	log.Println("Created new document for ", msg)
+	fmt.Println("Created new document for ", data.msg)
+	return nil
 }
