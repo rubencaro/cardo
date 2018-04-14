@@ -4,11 +4,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"time"
 
 	driver "github.com/arangodb/go-driver"
 	"github.com/gorilla/websocket"
-	"github.com/rubencaro/cardo/lib/input"
+	"github.com/rubencaro/cardo/lib/web/sockets"
 )
 
 var upgrader = websocket.Upgrader{
@@ -30,7 +29,7 @@ func SocketsHandler(coll driver.Collection) func(http.ResponseWriter, *http.Requ
 
 		log.Println("Socket connected")
 
-		go generateLogs(conn)
+		// go generateLogs(conn)
 
 		for {
 			_, msg, err := conn.ReadMessage()
@@ -39,7 +38,7 @@ func SocketsHandler(coll driver.Collection) func(http.ResponseWriter, *http.Requ
 				return
 			}
 
-			err = input.Dispatch(conn, coll, string(msg))
+			err = sockets.Dispatch(conn, coll, string(msg))
 			if err != nil {
 				fmt.Println(err)
 				return
@@ -48,18 +47,14 @@ func SocketsHandler(coll driver.Collection) func(http.ResponseWriter, *http.Requ
 	}
 }
 
-func send(conn *websocket.Conn, msg string) error {
-	return conn.WriteMessage(websocket.TextMessage, []byte(msg))
-}
-
-func generateLogs(conn *websocket.Conn) {
-	for {
-		err := send(conn, "bump")
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		time.Sleep(time.Second * 5)
-		log.Println("Bump sent")
-	}
-}
+// func generateLogs(conn *websocket.Conn) {
+// 	for {
+// 		err := send(conn, "bump")
+// 		if err != nil {
+// 			fmt.Println(err)
+// 			return
+// 		}
+// 		time.Sleep(time.Second * 5)
+// 		log.Println("Bump sent")
+// 	}
+// }
