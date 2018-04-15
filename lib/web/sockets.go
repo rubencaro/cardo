@@ -29,8 +29,6 @@ func SocketsHandler(coll driver.Collection) func(http.ResponseWriter, *http.Requ
 
 		log.Println("Socket connected")
 
-		// go generateLogs(conn)
-
 		for {
 			_, msg, err := conn.ReadMessage()
 			if err != nil {
@@ -46,15 +44,3 @@ func SocketsHandler(coll driver.Collection) func(http.ResponseWriter, *http.Requ
 		}
 	}
 }
-
-// func generateLogs(conn *websocket.Conn) {
-// 	for {
-// 		err := send(conn, "bump")
-// 		if err != nil {
-// 			fmt.Println(err)
-// 			return
-// 		}
-// 		time.Sleep(time.Second * 5)
-// 		log.Println("Bump sent")
-// 	}
-// }

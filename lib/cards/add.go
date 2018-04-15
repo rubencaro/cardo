@@ -3,6 +3,8 @@ package cards
 import (
 	"fmt"
 
+	"github.com/rubencaro/cardo/lib/db"
+
 	"github.com/rubencaro/cardo/lib/output"
 	"github.com/rubencaro/cardo/lib/types"
 )
@@ -13,7 +15,19 @@ func HandleAddCard(data *types.DispatchData) error {
 	if err != nil {
 		return fmt.Errorf("failed to create card: %s\nmeta: %s", err.Error(), meta)
 	}
-	// fmt.Println("Created new card for ", data.payload)
-	output.Send(data.Conn, "Card created")
+	return reportBack(data, meta.Key)
+}
+
+func reportBack(data *types.DispatchData, key string) error {
+	card, err := db.ReadCardJSON(data.Coll, key)
+	if err != nil {
+		return err
+	}
+
+	err = output.Send(data.Conn, "cards_upsertCard: "+card)
+	if err != nil {
+		return fmt.Errorf("failed to send card back: %s", err.Error())
+	}
+
 	return nil
 }

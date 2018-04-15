@@ -20,20 +20,36 @@ func init() {
 // Dispatch reads incoming message from given Conn and dispatches it
 // to the right function
 func Dispatch(conn *websocket.Conn, coll driver.Collection, msg string) error {
-	prefix, payload := splitMsg(msg)
-	data := &types.DispatchData{conn, coll, prefix, payload, nil}
+	prefix, payload, err := splitMsg(msg)
+	if err != nil {
+		return end(conn, err)
+	}
+
+	data := &types.DispatchData{
+		Conn:    conn,
+		Coll:    coll,
+		Prefix:  prefix,
+		Payload: payload,
+	}
 
 	handler, ok := routes[data.Prefix]
 	if !ok {
-		conn.Close()
-		return fmt.Errorf("Unexpected msg: %s", msg)
+		return end(conn, fmt.Errorf("Unexpected msg: %s", msg))
 	}
 	return handler(data)
 }
 
-func splitMsg(msg string) (string, string) {
+func end(conn *websocket.Conn, e error) error {
+	conn.Close()
+	return e
+}
+
+func splitMsg(msg string) (string, string, error) {
 	arr := strings.SplitN(msg, ": ", 2)
-	return arr[0], arr[1]
+	if len(arr) != 2 {
+		return "", "", fmt.Errorf("Could not split msg: %s", msg)
+	}
+	return arr[0], arr[1], nil
 }
 
 // parse is a middleware that will Unmarshal json on data.payload and save it on data.doc
